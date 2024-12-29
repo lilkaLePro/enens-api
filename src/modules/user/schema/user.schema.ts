@@ -6,7 +6,7 @@ import { Entity, ObjectIdColumn, ObjectId, Column } from 'typeorm';
 export class UserSchema {
 
   @Field(() => ID)
-  @ObjectIdColumn()
+  @ObjectIdColumn({name: '_id'})
   id: ObjectId;
 
   @Field()
