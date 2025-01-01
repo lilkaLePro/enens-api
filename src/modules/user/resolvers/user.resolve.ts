@@ -1,7 +1,8 @@
+import { ObjectId } from "typeorm";
 import { CreateUserInput } from "../dtos/user.DTO";
 import { UserSchema } from "../schema/user.schema";
 import { UserService } from "../services/user.service";
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Args, ID, Mutation, Query, Resolver } from "@nestjs/graphql";
 
 @Resolver(() => UserSchema)
 export class UserResolver {
@@ -10,9 +11,14 @@ export class UserResolver {
   ){}
 
   @Query(() => [UserSchema])
-  async users() {
+  async getAllUsers() {
     return this.userService.findAllUser();
   };
+  
+  @Query(() => UserSchema)
+  async getOneUser(@Args('id', {type: () => ID}) id: ObjectId): Promise<UserSchema> {
+    return this.userService.findUserById(id)
+  }
   
   @Mutation(() => UserSchema)
   async createUser(

@@ -14,9 +14,9 @@ type Mutation {
 }
 
 type Query {
-  getFuck: String!
+  getAllUsers: [UserSchema!]!
   getHello: String!
-  users: [UserSchema!]!
+  getOneUser(id: ID!): UserSchema!
 }
 
 type UserSchema {

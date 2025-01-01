@@ -11,8 +11,4 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Query(() => String)
-  getFuck(): string {
-    return this.appService.getFuck();
-  }
 }

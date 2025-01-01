@@ -24,4 +24,8 @@ export class UserSchema {
   @Field()
   @Column()
   password: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  sessionToken?: string;
 }

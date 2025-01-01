@@ -1,8 +1,9 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Connection, Repository } from "typeorm";
+import { Connection, ObjectId, Repository } from "typeorm";
 import { CreateUserInput } from "../dtos/user.DTO";
 import { UserSchema } from "../schema/user.schema";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { authentication, random } from "src/helpers";
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,19 @@ export class UserService {
   ){}
   async findAllUser() {
     return this.userRepository.find();
+  }
+  async findUserById(id: ObjectId): Promise<UserSchema> {
+    const findUser = await this.userRepository.findOne({where: {id}})
+    if(!findUser) {
+      throw new HttpException(
+        {
+          message: "User doesn't exist",
+          error: "invalid data"
+        },
+        HttpStatus.BAD_REQUEST
+      )
+    }
+    return findUser
   }
   async createUser(input: CreateUserInput ){
     const {email, firstName, lastName, password} = input;
@@ -27,15 +41,18 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
     );
     }
-    const user = new UserSchema()
-    user.email = email;
-    user.firstName = firstName;
-    user.password = lastName;
-    user.lastName = lastName;
+    const salt = random();
+  const hashedPassword = authentication(salt, password);
 
-    const newUser = await this.userRepository.save(user)
-    return newUser
+  const user = this.userRepository.create({
+    email,
+    firstName,
+    lastName,
+    password: hashedPassword,
+    sessionToken: null
+  });
 
+  return this.userRepository.save(user);
 
   }
 }
