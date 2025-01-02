@@ -2,8 +2,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Connection, ObjectId, Repository } from "typeorm";
 import { CreateUserInput } from "../dtos/user.DTO";
 import { UserSchema } from "../schema/user.schema";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { authentication, random } from "src/helpers";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import * as bcrypt from "bcrypt";
+import { random } from "src/helpers";
 
 @Injectable()
 export class UserService {
@@ -16,17 +17,11 @@ export class UserService {
     return this.userRepository.find();
   }
   async findUserById(id: ObjectId): Promise<UserSchema> {
-    const findUser = await this.userRepository.findOne({where: {id}})
-    if(!findUser) {
-      throw new HttpException(
-        {
-          message: "User doesn't exist",
-          error: "invalid data"
-        },
-        HttpStatus.BAD_REQUEST
-      )
+    const user = await this.userRepository.findOneBy({id: id})
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return findUser
+    return user
   }
   async createUser(input: CreateUserInput ){
     const {email, firstName, lastName, password} = input;
@@ -41,18 +36,18 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
     );
     }
-    const salt = random();
-  const hashedPassword = authentication(salt, password);
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
   const user = this.userRepository.create({
-    email,
-    firstName,
-    lastName,
-    password: hashedPassword,
+    email : email,
+    firstName : firstName,
+    lastName : lastName,
+    password : hashedPassword,
     sessionToken: null
   });
-
-  return this.userRepository.save(user);
+  const newUser = this.userRepository.save(user);
+  return newUser;
 
   }
 }

@@ -25,4 +25,5 @@ type UserSchema {
   id: ID!
   lastName: String!
   password: String!
+  sessionToken: String
 }
