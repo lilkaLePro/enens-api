@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './database/config/ormConfig';
-import { UserModules } from './modules/auth/user.module';
+import { UserModule } from './modules/auth/user.module';
 import { ProjectModules } from './modules/project/project.module';
 
 @Module({
@@ -17,7 +17,7 @@ import { ProjectModules } from './modules/project/project.module';
       // include: [] //ici pour les autres endpoints comme UserModules
     }),
     TypeOrmModule.forRoot(ormConfig()),
-    UserModules, ProjectModules
+    UserModule, ProjectModules
   ],
   providers: [AppService, AppController],
   
