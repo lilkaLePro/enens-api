@@ -10,6 +10,7 @@ export function ormConfig(): TypeOrmModuleOptions {
         autoLoadEntities: true,
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        ssl: true,
         extra: {
         connectionLimit: null,
         },
