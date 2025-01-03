@@ -22,4 +22,4 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
   exports: [JwtModule]
 })
 
-export class UserModules {};
+export class UserModule {};
