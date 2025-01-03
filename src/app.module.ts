@@ -17,7 +17,7 @@ import { ProjectModules } from './modules/project/project.module';
       // include: [] //ici pour les autres endpoints comme UserModules
     }),
     TypeOrmModule.forRoot(ormConfig()),
-    UserModule, ProjectModules
+    UserModule
   ],
   providers: [AppService, AppController],
   

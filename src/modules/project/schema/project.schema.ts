@@ -10,7 +10,11 @@ export class ProjectSchema {
   @ObjectIdColumn({name: '_id'})
   id: ObjectId;
 
-  @Field()
+  @Field(() => String)
   @Column()
   projectType: PROJECT_TYPE;
+
+  @Field()
+  @Column()
+  ProjectName: string
 }
