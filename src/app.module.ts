@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './database/config/ormConfig';
-import { UserModules } from './modules/user/user.module';
+import { UserModules } from './modules/auth/user.module';
 import { ProjectModules } from './modules/project/project.module';
 
 @Module({

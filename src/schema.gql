@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ConnectUserInput {
+  email: String!
+  password: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -11,6 +16,7 @@ input CreateUserInput {
 
 type Mutation {
   createUser(input: CreateUserInput!): UserSchema!
+  loginUser(input: ConnectUserInput!): UserSchema!
 }
 
 type Query {

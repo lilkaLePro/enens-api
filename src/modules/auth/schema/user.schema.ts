@@ -23,7 +23,7 @@ export class UserSchema {
 
   @Field()
   @Column()
-  password: string;
+  password?: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
