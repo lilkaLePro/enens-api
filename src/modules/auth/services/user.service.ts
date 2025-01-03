@@ -58,7 +58,7 @@ export class UserService {
 
   }
 
-  async loginUser(input: ConnectUserInput) {
+  async loginUser(input: ConnectUserInput): Promise<UserSchema> {
     const {email, password} = input;
 
     const isExistUser = await this.userRepository.findOne({where: {email}});
@@ -76,11 +76,10 @@ export class UserService {
     });
 
     return {
-      user: {
-        firstname: isExistUser.firstName,
-        lastname: isExistUser.lastName,
-        email: isExistUser.email
+        id: isExistUser.id,
+        firstName: isExistUser.firstName,
+        lastName: isExistUser.lastName,
+        email: isExistUser.email,
       }
-    };
 };
 }
