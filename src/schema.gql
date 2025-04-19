@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Address {
+  city: String
+  country: String
+  street: String
+}
+
 input ConnectUserInput {
   email: String!
   password: String!
@@ -12,6 +18,8 @@ input CreateUserInput {
   firstName: String!
   lastName: String!
   password: String!
+  role: Role!
+  sessionToken: String
 }
 
 type Mutation {
@@ -21,15 +29,27 @@ type Mutation {
 
 type Query {
   getAllUsers: [UserSchema!]!
+  getCurrentUser(sessionToken: String!): UserSchema!
   getHello: String!
-  getOneUser(id: ID!): UserSchema!
+  getUserByEmail(email: String!): UserSchema!
+}
+
+"""The role of the user in the system"""
+enum Role {
+  ADMIN
+  USER
 }
 
 type UserSchema {
+  Adress: Address
+  _id: ID!
+  biographie: String!
   email: String!
   firstName: String!
-  id: ID!
+  function: String
   lastName: String!
   password: String!
+  profileUrl: String!
+  role: Role!
   sessionToken: String
 }

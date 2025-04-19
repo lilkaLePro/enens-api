@@ -16,5 +16,10 @@ export class ProjectSchema {
 
   @Field()
   @Column()
-  ProjectName: string
+  ProjectName: string;
+
+  @Field()
+  @Column()
+  description: string;
+
 }

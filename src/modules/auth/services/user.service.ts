@@ -1,85 +1,104 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { Connection, ObjectId, Repository } from "typeorm";
-import { ConnectUserInput, CreateUserInput } from "../dtos/user.DTO";
-import { UserSchema } from "../schema/user.schema";
-import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
-import * as bcrypt from "bcrypt";
-import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, ObjectId, Repository } from 'typeorm';
+import { ConnectUserInput, CreateUserInput } from '../dtos/user.DTO';
+import { UserSchema } from '../schema/user.schema';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor (
-    @InjectRepository(UserSchema)  
+  constructor(
+    @InjectRepository(UserSchema)
     private readonly userRepository: Repository<UserSchema>,
     private readonly connection: Connection,
     private readonly jwtService: JwtService,
-  ){}
+  ) {}
   async findAllUser() {
     return this.userRepository.find();
   }
-  async findUserById(id: ObjectId): Promise<UserSchema> {
-    const user = await this.userRepository.findOneBy({id})
+  async getUserByEmail(email: string): Promise<UserSchema> {
+    const user = await this.userRepository.findOne({ where: { email: email } });
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with email ${email} not found`);
     }
-    return user
+    return user;
   }
-  async createUser(input: CreateUserInput ){
-    const {email, firstName, lastName, password} = input;
-    const isUnique = await this.userRepository.findOne({where: {email}})
+  async currentUser(token: string): Promise<UserSchema> {
+    const user = await this.userRepository.findOneOrFail({
+      where: { sessionToken: token },
+    });
+    return user;
+  }
+  async createUser(input: CreateUserInput): Promise<UserSchema> {
+    const { email, firstName, lastName, password, role } = input;
+    const isUnique = await this.userRepository.findOne({ where: { email } });
 
-    if(isUnique) {
+    if (isUnique) {
       throw new HttpException(
         {
-            message: "input data invalid",
-            error: "email already exist"
+          message: 'User already exist, please login !',
+          error: 'email already exist',
         },
         HttpStatus.BAD_REQUEST,
-    );
+      );
     }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = this.userRepository.create({
-    email : email,
-    firstName : firstName,
-    lastName : lastName,
-    password : hashedPassword,
-    sessionToken: null
-  });
-  const newUser = await this.userRepository.save(user);
+    const user = this.userRepository.create({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: hashedPassword,
+      sessionToken: null,
+      role: role,
+    });
+    const newUser = await this.userRepository.save(user);
 
-  const payload = {id: newUser.id, email: newUser.email}
-  const token = await this.jwtService.signAsync(payload, {secret: 'JWT_SECRET'})
+    const payload = { id: newUser._id, email: newUser.email };
+    const sessionToken = await this.jwtService.signAsync(payload, {
+      secret: 'JWT_SECRET',
+      expiresIn: '2d',
+    });
+    newUser.sessionToken = sessionToken;
+    await this.userRepository.save(newUser);
 
-  return {
-      ...newUser, token
-    }
-
+    return newUser;
   }
 
   async loginUser(input: ConnectUserInput): Promise<UserSchema> {
-    const {email, password} = input;
+    const { email, password } = input;
 
-    const isExistUser = await this.userRepository.findOne({where: {email}});
-    if(!isExistUser) {
+    const isExistUser = await this.userRepository.findOne({ where: { email } });
+    if (!isExistUser) {
       throw new HttpException("user doesn't exist", HttpStatus.BAD_REQUEST);
-    };
+    }
     const isMatch = await bcrypt.compare(password, isExistUser.password);
-    if(!isMatch) {
-      throw new HttpException("Incorrect password", HttpStatus.BAD_REQUEST);
-    };
-    const payload = { id: isExistUser.id, email: isExistUser.email };
+    if (!isMatch) {
+      throw new HttpException('Incorrect password', HttpStatus.BAD_REQUEST);
+    }
+    const payload = { id: isExistUser._id, email: isExistUser.email };
     const token = await this.jwtService.signAsync(payload, {
       secret: 'JWT_SECRET',
-      expiresIn: '1h',
+      expiresIn: '2d',
     });
+    const sessionToken = token;
+    console.log(sessionToken);
+
+    await this.userRepository.update(
+      { _id: isExistUser._id },
+      { sessionToken },
+    );
 
     return {
-        id: isExistUser.id,
-        firstName: isExistUser.firstName,
-        lastName: isExistUser.lastName,
-        email: isExistUser.email,
-      }
-};
+      ...isExistUser,
+      sessionToken,
+    };
+  }
 }
