@@ -16,7 +16,6 @@ export class UserService {
   constructor(
     @InjectRepository(UserSchema)
     private readonly userRepository: Repository<UserSchema>,
-    private readonly connection: Connection,
     private readonly jwtService: JwtService,
   ) {}
   async findAllUser() {
@@ -33,6 +32,15 @@ export class UserService {
     const user = await this.userRepository.findOneOrFail({
       where: { sessionToken: token },
     });
+    if(!user) {
+      throw new HttpException(
+        {
+          message: 'Error token fetching current user',
+          error: 'Token Error'
+        },
+        HttpStatus.BAD_REQUEST
+      )
+    }
     return user;
   }
   async createUser(input: CreateUserInput): Promise<UserSchema> {

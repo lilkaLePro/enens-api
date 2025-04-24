@@ -9,7 +9,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [UserSchema])
-  async getAllUsers() {
+  async getAllUsers(): Promise<UserSchema[]> {
     return this.userService.findAllUser();
   }
 

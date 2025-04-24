@@ -1,8 +1,17 @@
-import { registerEnumType } from "@nestjs/graphql";
+import { Field, InputType } from "@nestjs/graphql";
+import { PROJECT_TYPE } from "../enum";
 
-export enum PROJECT_TYPE {
-  PROMO_CAMPAGNE = "PROMO_CAMPAGNE",
-  FUND_RAISING_CAMPAGNE = "FUND_RAISING_CAMPAGNE"
+@InputType()
+export class createProjectInput {
+  @Field()
+  projectName: string
+
+  @Field()
+  projectType: PROJECT_TYPE
+
+  @Field()
+  description: string
+
+  @Field()
+  userId: string
 }
-
-registerEnumType(PROJECT_TYPE, {name: "PROJECT_TYPE"});

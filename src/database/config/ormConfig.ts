@@ -1,5 +1,4 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
-import {getMetadataArgsStorage} from 'typeorm'
 
 export function ormConfig(): TypeOrmModuleOptions {
     return {
