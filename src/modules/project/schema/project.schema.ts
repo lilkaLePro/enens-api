@@ -7,8 +7,8 @@ import { PROJECT_TYPE } from "../enum";
 @Entity({name: 'projects'})
 export class ProjectSchema {
   @Field(() => ID)
-  @ObjectIdColumn({name: '_id'})
-  _id: ObjectId;
+  @ObjectIdColumn()
+  _id: string;
 
   @Field(() => String)
   @Column()
@@ -16,13 +16,13 @@ export class ProjectSchema {
 
   @Field()
   @Column()
-  ProjectName: String;
+  ProjectName: string;
 
   @Field()
   @Column()
-  description: String;
+  description: string;
 
-  @Field(() => String)
+  @Field(() => ID)
   @Column()
   authorId: ObjectId
 

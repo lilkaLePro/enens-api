@@ -13,6 +13,13 @@ input ConnectUserInput {
   password: String!
 }
 
+input CreateProjectInput {
+  authorId: String!
+  description: String!
+  projectName: String!
+  projectType: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -23,6 +30,7 @@ input CreateUserInput {
 }
 
 type Mutation {
+  createNewProject(input: CreateProjectInput!): Project!
   createUser(input: CreateUserInput!): User!
   loginUser(input: ConnectUserInput!): User!
 }
@@ -30,7 +38,7 @@ type Mutation {
 type Project {
   ProjectName: String!
   _id: ID!
-  authorId: String!
+  authorId: ID!
   description: String!
   projectType: String!
 }

@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { PROJECT_TYPE } from "../enum";
 
 @InputType()
-export class createProjectInput {
+export class CreateProjectInput {
   @Field()
   projectName: string
 
@@ -13,5 +13,5 @@ export class createProjectInput {
   description: string
 
   @Field()
-  userId: string
+  authorId: string
 }

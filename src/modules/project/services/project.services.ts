@@ -1,14 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ProjectSchema } from "../schema/project.schema";
-import { ObjectId } from "mongodb";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ProjectSchema } from '../schema/project.schema';
+import { ObjectId } from 'mongodb';
+import { CreateProjectInput } from '../dtos/project.dtos';
 
 @Injectable()
 export class ProjectServices {
   constructor(
     @InjectRepository(ProjectSchema)
-    private readonly projectRepository: Repository<ProjectSchema>
+    private readonly projectRepository: Repository<ProjectSchema>,
   ) {}
 
   async findAllProjects(): Promise<ProjectSchema[]> {
@@ -16,20 +17,23 @@ export class ProjectServices {
     return projects;
   }
   async findUserProjects(authorId: string): Promise<ProjectSchema[]> {
-    // if(authorId.length < 12) {
-    //   throw new Error("this table is empty")
-    // }
-    const projects = await this.projectRepository.findBy({ authorId: new ObjectId(authorId) })
-    return projects
+    const projects = await this.projectRepository.findBy({
+      authorId: new ObjectId(authorId),
+    });
+    return projects;
   }
 
-  // async findAllUsersProjects(userId: string): Promise<ProjectSchema> {
-  //   const projects = await this.projectRepository.findBy({ id: new ObjectId(userId) })
+  async createNewProject(input: CreateProjectInput): Promise<ProjectSchema> {
+    const { projectName, description, projectType, authorId } = input;
     
-  //   return projects;
-  // }
+    const project = this.projectRepository.create({
+      projectType: projectType,
+      ProjectName: projectName,
+      description: description,
+      authorId: new ObjectId(authorId),
+    });
+    const newProject = await this.projectRepository.save(project)
 
-  // async addProject(input: createProjectInput): Promise<ProjectSchema> {
-  //   return
-  // }
+    return newProject;
+  }
 }
