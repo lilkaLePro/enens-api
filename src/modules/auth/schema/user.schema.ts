@@ -19,7 +19,7 @@ export class Address {
 }
 
 @Entity({name: 'users'})
-@ObjectType()
+@ObjectType('User')
 export class UserSchema {
 
   @Field(() => ID)

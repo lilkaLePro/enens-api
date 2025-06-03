@@ -13,6 +13,13 @@ input ConnectUserInput {
   password: String!
 }
 
+input CreateProjectInput {
+  authorId: String!
+  description: String!
+  projectName: String!
+  projectType: String!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -23,15 +30,26 @@ input CreateUserInput {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): UserSchema!
-  loginUser(input: ConnectUserInput!): UserSchema!
+  createNewProject(input: CreateProjectInput!): Project!
+  createUser(input: CreateUserInput!): User!
+  loginUser(input: ConnectUserInput!): User!
+}
+
+type Project {
+  ProjectName: String!
+  _id: ID!
+  authorId: ID!
+  description: String!
+  projectType: String!
 }
 
 type Query {
-  getAllUsers: [UserSchema!]!
-  getCurrentUser(sessionToken: String!): UserSchema!
+  getAllProjects: [Project!]!
+  getAllUsers: [User!]!
+  getCurrentUser(sessionToken: String!): User!
   getHello: String!
-  getUserByEmail(email: String!): UserSchema!
+  getUserByEmail(email: String!): User!
+  getUserProjects(authorId: String!): [Project!]!
 }
 
 """The role of the user in the system"""
@@ -40,7 +58,7 @@ enum Role {
   USER
 }
 
-type UserSchema {
+type User {
   Adress: Address
   _id: ID!
   biographie: String!
