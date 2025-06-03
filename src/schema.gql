@@ -49,6 +49,7 @@ type Query {
   getCurrentUser(sessionToken: String!): User!
   getHello: String!
   getUserByEmail(email: String!): User!
+  getUserById(id: String!): User!
   getUserProjects(authorId: String!): [Project!]!
 }
 

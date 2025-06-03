@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, ObjectId, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { ConnectUserInput, CreateUserInput } from '../dtos/user.DTO';
 import { UserSchema } from '../schema/user.schema';
 import {
@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserService {
@@ -40,6 +41,15 @@ export class UserService {
         },
         HttpStatus.BAD_REQUEST
       )
+    }
+    return user;
+  }
+  async findById(id: string): Promise<UserSchema> {
+    const user = await this.userRepository.findOneBy({
+      _id: new ObjectId(id)
+    })
+    if (!user) {
+      throw new NotFoundException(`User with email ${id} not found`);
     }
     return user;
   }
