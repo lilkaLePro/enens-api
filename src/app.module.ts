@@ -5,19 +5,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './database/config/ormConfig';
-import { UserModule } from './modules/auth/user.module';
 import { ProjectModules } from './modules/project/project.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: ".env",
+      load: [ormConfig],
+      isGlobal: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
-      // include: [] //ici pour les autres endpoints comme UserModules
     }),
     TypeOrmModule.forRoot(ormConfig()),
-    UserModule, ProjectModules
+    AuthModule, ProjectModules
   ],
   providers: [AppService, AppController],
   

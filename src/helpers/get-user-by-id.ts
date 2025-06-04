@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
-import { UserResolver } from 'src/modules/auth/resolvers/user.resolve';
-import { UserSchema } from 'src/modules/auth/schema/user.schema';
-import { Repository } from 'typeorm';
+import { UserResolver } from 'src/modules/user/resolvers/user.resolve';
 
 @Injectable()
 export class GetUserById {

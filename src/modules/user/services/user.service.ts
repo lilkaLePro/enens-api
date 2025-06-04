@@ -31,7 +31,7 @@ export class UserService {
   }
   async currentUser(token: string): Promise<UserSchema> {
     const user = await this.userRepository.findOneOrFail({
-      where: { sessionToken: token },
+      where: { accessToken: token },
     });
     if(!user) {
       throw new HttpException(
@@ -54,7 +54,7 @@ export class UserService {
     return user;
   }
   async createUser(input: CreateUserInput): Promise<UserSchema> {
-    const { email, firstName, lastName, password, role } = input;
+    const { email, firstName, lastName, password } = input;
     const isUnique = await this.userRepository.findOne({ where: { email } });
 
     if (isUnique) {
@@ -74,8 +74,7 @@ export class UserService {
       firstName: firstName,
       lastName: lastName,
       password: hashedPassword,
-      sessionToken: null,
-      role: role,
+      accessToken: null,
     });
     const newUser = await this.userRepository.save(user);
 
@@ -84,7 +83,7 @@ export class UserService {
       secret: 'JWT_SECRET',
       expiresIn: '2d',
     });
-    newUser.sessionToken = sessionToken;
+    newUser.accessToken = sessionToken;
     await this.userRepository.save(newUser);
 
     return newUser;
@@ -106,17 +105,17 @@ export class UserService {
       secret: 'JWT_SECRET',
       expiresIn: '2d',
     });
-    const sessionToken = token;
-    console.log(sessionToken);
+    const accessToken = token;
+
 
     await this.userRepository.update(
       { _id: isExistUser._id },
-      { sessionToken },
+      { accessToken },
     );
 
     return {
       ...isExistUser,
-      sessionToken,
+      accessToken,
     };
   }
 }

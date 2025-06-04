@@ -33,13 +33,13 @@ export class UserResolver {
     return this.userService.currentUser(id);
   }
 
-  @Mutation(() => UserSchema)
-  async loginUser(@Args('input') input: ConnectUserInput): Promise<UserSchema> {
-    return await this.userService.loginUser(input);
-  }
+  // @Mutation(() => UserSchema)
+  // async loginUser(@Args('input') input: ConnectUserInput): Promise<UserSchema> {
+  //   return await this.userService.loginUser(input);
+  // }
 
-  @Mutation(() => UserSchema)
-  async createUser(@Args('input') input: CreateUserInput): Promise<UserSchema> {
-    return await this.userService.createUser(input);
-  }
+  // @Mutation(() => UserSchema)
+  // async createUser(@Args('input') input: CreateUserInput): Promise<UserSchema> {
+  //   return await this.userService.createUser(input);
+  // }
 }

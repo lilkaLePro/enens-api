@@ -64,7 +64,7 @@ export class UserSchema {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  sessionToken?: string;
+  accessToken?: string;
 
 
 }
