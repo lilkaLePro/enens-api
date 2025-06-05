@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
 import { Repository } from 'typeorm';
-import { AuthJWTPayload, AuthPayload, ConnectUserInput, CreateUserInput, Role } from '../user/dtos/user.DTO';
+import { AuthJWTPayload, AuthPayload, ConnectUserInput, CreateUserInput, JWTUser, Role } from '../user/dtos/user.DTO';
 import { UserSchema } from '../user/schema/user.schema';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class AuthService {
@@ -55,5 +56,14 @@ export class AuthService {
       role: user.role,
       accessToken,
     }
+  }
+
+  async validateJWTUser(userId: string) {
+    const user = await this.userRepo.findOneByOrFail({_id: new ObjectId(userId)});
+    const JWTUser: JWTUser = {
+      userId: user._id.toString(),
+      role: user.role,
+    }
+    return JWTUser;
   }
 }

@@ -53,3 +53,7 @@ export type AuthJWTPayload = {
     userId: string;
   }
 }
+export type JWTUser = {
+  userId: string;
+  role: Role;
+}
