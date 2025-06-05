@@ -3,7 +3,14 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
 import { Repository } from 'typeorm';
-import { AuthJWTPayload, AuthPayload, ConnectUserInput, CreateUserInput, JWTUser, Role } from '../user/dtos/user.DTO';
+import {
+  AuthJWTPayload,
+  AuthPayload,
+  ConnectUserInput,
+  CreateUserInput,
+  JWTUser,
+  Role,
+} from '../user/dtos/user.DTO';
 import { UserSchema } from '../user/schema/user.schema';
 import { ObjectId } from 'mongodb';
 
@@ -11,7 +18,7 @@ import { ObjectId } from 'mongodb';
 export class AuthService {
   constructor(
     @InjectRepository(UserSchema) private userRepo: Repository<UserSchema>,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUser(input: CreateUserInput) {
@@ -19,18 +26,23 @@ export class AuthService {
     const newUser = this.userRepo.create({
       ...input,
       password: hashedPassword,
-      role: Role.USER
+      role: Role.USER,
+      accessToken: null,
     });
+    const { accessToken } = await this.generateToken(`${newUser._id}`);
+    const savedUser = await this.userRepo.save(newUser);
+    savedUser.accessToken = accessToken;
+    await this.userRepo.save(savedUser);
 
-    return await this.userRepo.save(newUser);
+    return savedUser;
   }
 
-  async validateLocalUser ({email, password}: ConnectUserInput) {
-    const user = this.userRepo.findOneByOrFail({email});
-    const passwordMatch = await verify((await user).password, password)
+  async validateUser({ email, password }: ConnectUserInput) {
+    const user = this.userRepo.findOneByOrFail({ email });
+    const passwordMatch = await verify((await user).password, password);
 
-    if(!passwordMatch) {
-      throw new UnauthorizedException('Invalid creadentials')
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid creadentials');
     }
     return user;
   }
@@ -39,31 +51,52 @@ export class AuthService {
     const payload: AuthJWTPayload = {
       sub: {
         userId: userId,
-      }
-    }
-    const accessToken = await this.jwtService.signAsync(payload)
+      },
+    };
+    const accessToken = await this.jwtService.signAsync(payload);
     return { accessToken };
   }
 
-  async login (user: UserSchema): Promise<AuthPayload> {
-    const { accessToken } = await this.generateToken(user._id.toString())
+  async login(user: UserSchema): Promise<AuthPayload> {
+    const { accessToken } = await this.generateToken(user._id.toString());
     if (!user._id) {
-      throw new Error("User ID is missing");
+      throw new Error('User ID is missing');
     }
+    const savedUser = await this.userRepo.save(user);
+    savedUser.accessToken = accessToken;
+    await this.userRepo.save(savedUser);
 
     return {
       userId: user._id.toString(),
       role: user.role,
       accessToken,
-    }
+    };
   }
 
   async validateJWTUser(userId: string) {
-    const user = await this.userRepo.findOneByOrFail({_id: new ObjectId(userId)});
+    const user = await this.userRepo.findOneByOrFail({
+      _id: new ObjectId(userId),
+    });
     const JWTUser: JWTUser = {
       userId: user._id.toString(),
       role: user.role,
-    }
+    };
     return JWTUser;
+  }
+
+  async getCurrentUserFromToken(token: string): Promise<UserSchema> {
+    try {
+      const decoded = this.jwtService.verify<AuthJWTPayload>(token);
+  
+      const userId = decoded.sub.userId;
+  
+      const user = await this.userRepo.findOneByOrFail({
+        _id: new ObjectId(userId),
+      });
+  
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }

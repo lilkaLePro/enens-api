@@ -62,9 +62,8 @@ export class UserSchema {
   @Column(() => Address)
   Adress?: Address
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  accessToken?: string;
-
+  @Field()
+  @Column()
+  accessToken: string;
 
 }

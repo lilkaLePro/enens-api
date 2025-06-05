@@ -36,7 +36,7 @@ input CreateUserInput {
 
 type Mutation {
   createNewProject(input: CreateProjectInput!): Project!
-  signIn(input: ConnectUserInput!): AuthPayload!
+  login(input: ConnectUserInput!): AuthPayload!
   signUp(input: CreateUserInput!): User!
 }
 
@@ -49,6 +49,7 @@ type Project {
 }
 
 type Query {
+  currentUser: User!
   getAllProjects: [Project!]!
   getHello: String!
   getUserProjects(authorId: String!): [Project!]!
@@ -63,7 +64,7 @@ enum Role {
 type User {
   Adress: Address
   _id: ID!
-  accessToken: String
+  accessToken: String!
   biographie: String!
   email: String!
   firstName: String!
