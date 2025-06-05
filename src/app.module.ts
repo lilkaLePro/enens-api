@@ -8,6 +8,7 @@ import { ormConfig } from './database/config/ormConfig';
 import { ProjectModules } from './modules/project/project.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { JWTStrategy } from './modules/auth/strategies/jwt.strategie';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { ConfigModule } from '@nestjs/config';
     TypeOrmModule.forRoot(ormConfig()),
     AuthModule, ProjectModules
   ],
-  providers: [AppService, AppController],
+  providers: [AppService, AppController, JWTStrategy],
   
 })
 export class AppModule {}

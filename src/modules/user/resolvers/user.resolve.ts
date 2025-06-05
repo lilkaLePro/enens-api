@@ -3,6 +3,8 @@ import { ConnectUserInput, CreateUserInput } from '../dtos/user.DTO';
 import { UserSchema } from '../schema/user.schema';
 import { UserService } from '../services/user.service';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlJwtGuardGuard } from 'src/modules/auth/guards/gql-jwt-guard/gql-jwt-guard';
 
 @Resolver(() => UserSchema)
 export class UserResolver {
@@ -12,6 +14,7 @@ export class UserResolver {
   async getAllUsers(): Promise<UserSchema[]> {
     return this.userService.findAllUser();
   }
+  
   @Query(() => UserSchema)
   async getUserById(
     @Args('id', { type: () => String }) id: string,
