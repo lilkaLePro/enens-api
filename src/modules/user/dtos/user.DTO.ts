@@ -1,4 +1,4 @@
-import { Field, ID, InputType, registerEnumType } from "@nestjs/graphql";
+import { Field, ID, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
 
 export enum Role {
   USER = "USER",
@@ -23,11 +23,8 @@ export class CreateUserInput {
   @Field()
   password: string
 
-  @Field(() => Role)
-  role: Role
-
   @Field({nullable: true})
-  sessionToken?: string
+  accessToken?: string
 }
 
 @InputType()
@@ -37,4 +34,22 @@ export class ConnectUserInput {
 
   @Field()
   password: string
+}
+
+@ObjectType()
+export class AuthPayload {
+  @Field()
+  userId: string
+
+  @Field()
+  role: Role
+
+  @Field()
+  accessToken: string
+}
+
+export type AuthJWTPayload = {
+  sub: {
+    userId: string;
+  }
 }

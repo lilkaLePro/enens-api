@@ -8,6 +8,12 @@ type Address {
   street: String
 }
 
+type AuthPayload {
+  accessToken: String!
+  role: String!
+  userId: String!
+}
+
 input ConnectUserInput {
   email: String!
   password: String!
@@ -21,18 +27,17 @@ input CreateProjectInput {
 }
 
 input CreateUserInput {
+  accessToken: String
   email: String!
   firstName: String!
   lastName: String!
   password: String!
-  role: Role!
-  sessionToken: String
 }
 
 type Mutation {
   createNewProject(input: CreateProjectInput!): Project!
-  createUser(input: CreateUserInput!): User!
-  loginUser(input: ConnectUserInput!): User!
+  signIn(input: ConnectUserInput!): AuthPayload!
+  signUp(input: CreateUserInput!): User!
 }
 
 type Project {
@@ -45,10 +50,7 @@ type Project {
 
 type Query {
   getAllProjects: [Project!]!
-  getAllUsers: [User!]!
-  getCurrentUser(sessionToken: String!): User!
   getHello: String!
-  getUserByEmail(email: String!): User!
   getUserProjects(authorId: String!): [Project!]!
 }
 
@@ -61,6 +63,7 @@ enum Role {
 type User {
   Adress: Address
   _id: ID!
+  accessToken: String
   biographie: String!
   email: String!
   firstName: String!
@@ -69,5 +72,4 @@ type User {
   password: String!
   profileUrl: String!
   role: Role!
-  sessionToken: String
 }
