@@ -21,6 +21,8 @@ import { JWTStrategy } from './modules/auth/strategies/jwt.strategie';
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
+      introspection: true,
+      playground: true,
     }),
     TypeOrmModule.forRoot(ormConfig()),
     AuthModule, ProjectModules
