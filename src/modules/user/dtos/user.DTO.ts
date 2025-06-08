@@ -1,4 +1,5 @@
 import { Field, ID, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { ObjectId } from "mongodb";
 
 export enum Role {
   USER = "USER",

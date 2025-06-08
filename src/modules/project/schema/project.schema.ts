@@ -8,7 +8,7 @@ import { PROJECT_TYPE } from "../enum";
 export class ProjectSchema {
   @Field(() => ID)
   @ObjectIdColumn()
-  _id: string;
+  _id: ObjectId;
 
   @Field(() => String)
   @Column()

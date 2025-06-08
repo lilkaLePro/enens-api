@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
@@ -22,6 +22,18 @@ export class AuthService {
   ) {}
 
   async registerUser(input: CreateUserInput) {
+    
+    const isUnique = await this.userRepo.findOne({ where: { email: input.email } });
+    if (isUnique) {
+      throw new HttpException(
+        {
+          message: 'User already exist, please login !',
+          error: 'email already exist',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const hashedPassword = await hash(input.password);
     const newUser = this.userRepo.create({
       ...input,
@@ -29,8 +41,9 @@ export class AuthService {
       role: Role.USER,
       accessToken: null,
     });
-    const { accessToken } = await this.generateToken(`${newUser._id}`);
+
     const savedUser = await this.userRepo.save(newUser);
+    const { accessToken } = await this.generateToken(savedUser._id.toString());
     savedUser.accessToken = accessToken;
     await this.userRepo.save(savedUser);
 
