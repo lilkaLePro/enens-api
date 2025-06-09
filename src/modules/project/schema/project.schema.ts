@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { ObjectId } from "mongodb";
-import { Column, Entity, ObjectIdColumn } from "typeorm";
-import { PROJECT_TYPE } from "../enum"; 
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { ObjectId } from 'mongodb';
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { PROJECT_TYPE } from '../enum';
 
 @ObjectType('Project')
-@Entity({name: 'projects'})
+@Entity({ name: 'projects' })
 export class ProjectSchema {
   @Field(() => ID)
   @ObjectIdColumn()
@@ -24,6 +24,13 @@ export class ProjectSchema {
 
   @Field(() => ID)
   @Column()
-  authorId: ObjectId
+  authorId: ObjectId;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  thumbnailUrl?: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
+  objectifAmount?: string;
 }
