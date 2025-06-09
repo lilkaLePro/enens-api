@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserResolver } from 'src/modules/user/resolvers/user.resolve';
+import { AuthResolver } from 'src/modules/auth/auth.resolver';
 
 @Injectable()
 export class GetUserById {
-  constructor(private readonly resolvers: UserResolver) {}
+  constructor(private readonly resolvers: AuthResolver) {}
 
   async execute(userId: string) {
     return this.resolvers.getUserById(userId);

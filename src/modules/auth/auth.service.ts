@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash, verify } from 'argon2';
@@ -84,6 +84,16 @@ export class AuthService {
       role: user.role,
       accessToken,
     };
+  }
+
+  async findById(id: string): Promise<UserSchema> {
+    const user = await this.userRepo.findOneBy({
+      _id: new ObjectId(id)
+    })
+    if (!user) {
+      throw new NotFoundException(`User with email ${id} not found`);
+    }
+    return user;
   }
 
   async validateJWTUser(userId: string) {

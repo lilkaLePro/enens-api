@@ -52,6 +52,7 @@ type Query {
   currentUser: User!
   getAllProjects: [Project!]!
   getHello: String!
+  getUserById(id: String!): User!
   getUserProjects(authorId: String!): [Project!]!
 }
 

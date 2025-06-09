@@ -32,4 +32,12 @@ export class AuthResolver {
     return this.authService.getCurrentUserFromToken(token);
   }
 
+  @Query(() => UserSchema)
+  async getUserById(
+    @Args('id', { type: () => String }) id: string,
+  ): Promise<UserSchema> {
+    const user = this.authService.findById(id);
+    return user;
+  }
+
 }
