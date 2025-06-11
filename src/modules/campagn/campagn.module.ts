@@ -11,4 +11,4 @@ import { Campagn } from "./schema/campagn.schema";
   providers: [ProjectResolver, ProjectServices]
 })
 
-export class ProjectModules {};
+export class CampagnModules {};
