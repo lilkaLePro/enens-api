@@ -21,7 +21,6 @@ export class Address {
 @Entity({name: 'users'})
 @ObjectType('User')
 export class UserSchema {
-
   @Field(() => ID)
   @ObjectIdColumn()
   _id: ObjectId;
@@ -47,6 +46,20 @@ export class UserSchema {
   role?: Role
 
   @Field()
+  @Column()
+  accessToken: string;
+}
+
+export class Profile {
+  @Field(() => ID)
+  @ObjectIdColumn()
+  _id: ObjectId;
+
+  @Field(() => ID)
+  @Column({ type: String})
+  userId: ObjectId;
+  
+  @Field()
   @Column({nullable: true})
   biographie?: string
 
@@ -61,9 +74,4 @@ export class UserSchema {
   @Field(() => Address, { nullable: true })
   @Column(() => Address)
   Adress?: Address
-
-  @Field()
-  @Column()
-  accessToken: string;
-
 }

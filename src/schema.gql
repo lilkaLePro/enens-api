@@ -2,16 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Address {
-  city: String
-  country: String
-  street: String
-}
-
 type AuthPayload {
   accessToken: String!
   role: String!
   userId: String!
+}
+
+enum CAMPAGN_TYPE {
+  FUND_RAISING_CAMPAGNE
+  PROMO_CAMPAGNE
+}
+
+type Campagn {
+  EntrepriseId: ID!
+  _id: ID!
+  authorId: ID!
+  campagnName: String!
+  campagnType: [CAMPAGN_TYPE!]!
+  description: String!
+  objectifAmount: String!
+  thumbnailUrl: String!
 }
 
 input ConnectUserInput {
@@ -19,11 +29,12 @@ input ConnectUserInput {
   password: String!
 }
 
-input CreateProjectInput {
+input CreateCampagnInput {
   authorId: String!
+  campagnName: String!
+  campagnType: [CAMPAGN_TYPE!]!
   description: String!
-  projectName: String!
-  projectType: String!
+  thumbnailUrl: String
 }
 
 input CreateUserInput {
@@ -35,25 +46,17 @@ input CreateUserInput {
 }
 
 type Mutation {
-  createNewProject(input: CreateProjectInput!): Project!
+  createNewCampagn(input: CreateCampagnInput!): Campagn!
   login(input: ConnectUserInput!): AuthPayload!
   signUp(input: CreateUserInput!): User!
 }
 
-type Project {
-  ProjectName: String!
-  _id: ID!
-  authorId: ID!
-  description: String!
-  projectType: String!
-}
-
 type Query {
   currentUser: User!
-  getAllProjects: [Project!]!
+  getAllCampagns: [Campagn!]!
   getHello: String!
   getUserById(id: String!): User!
-  getUserProjects(authorId: String!): [Project!]!
+  getUserCampagns(authorId: String!): [Campagn!]!
 }
 
 """The role of the user in the system"""
@@ -63,15 +66,11 @@ enum Role {
 }
 
 type User {
-  Adress: Address
   _id: ID!
   accessToken: String!
-  biographie: String!
   email: String!
   firstName: String!
-  function: String
   lastName: String!
   password: String!
-  profileUrl: String!
   role: Role!
 }

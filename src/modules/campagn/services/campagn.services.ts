@@ -1,0 +1,41 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Campagn } from '../schema/campagn.schema';
+import { ObjectId } from 'mongodb';
+import { CreateCampagnInput } from '../dtos/campagn.dtos';
+import { CAMPAGN_TYPE } from '../enum';
+
+@Injectable()
+export class ProjectServices {
+  constructor(
+    @InjectRepository(Campagn)
+    private readonly projectRepository: Repository<Campagn>,
+  ) {}
+
+  async findAllCampagns(): Promise<Campagn[]> {
+    const projects = await this.projectRepository.find();
+    return projects;
+  }
+  async findUserCampagns(authorId: string): Promise<Campagn[]> {
+    const projects = await this.projectRepository.findBy({
+      authorId: new ObjectId(authorId),
+    });
+    return projects;
+  }
+
+  async createNewCampagn(input: CreateCampagnInput): Promise<Campagn> {
+    const { campagnName, description, campagnType = [CAMPAGN_TYPE.PROMO_CAMPAGNE], authorId, thumbnailUrl } = input;
+    
+    const newCampagn = this.projectRepository.create({
+      campagnName: campagnName,
+      campagnType: campagnType,
+      description: description,
+      authorId: new ObjectId(authorId),
+      thumbnailUrl: thumbnailUrl
+    });
+    await this.projectRepository.save(newCampagn)
+
+    return newCampagn;
+  }
+}
