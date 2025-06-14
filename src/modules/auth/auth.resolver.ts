@@ -14,21 +14,26 @@ export class AuthResolver {
   }
   
   @Mutation(() => AuthPayload)
-  async login(@Args('input') input: ConnectUserInput){
+  async login(@Args('input') input: ConnectUserInput, @Context() context){
     const user = await this.authService.validateUser(input);
-    return await this.authService.login(user);
+    const { accessToken, role, userId } = await this.authService.login(user);
+    
+    context.res.cookie('token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+    return { accessToken, role, userId }
   }
 
   @Query(() => UserSchema)
   async currentUser(@Context('req') req): Promise<UserSchema> {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       throw new UnauthorizedException('No token provided');
     }
-
-    const token = authHeader.split(' ')[1];
-
     return this.authService.getCurrentUserFromToken(token);
   }
 

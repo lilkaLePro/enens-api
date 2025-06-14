@@ -50,6 +50,8 @@ export class UserSchema {
   accessToken: string;
 }
 
+@Entity({name: 'profiles'})
+@ObjectType('Profile')
 export class Profile {
   @Field(() => ID)
   @ObjectIdColumn()
