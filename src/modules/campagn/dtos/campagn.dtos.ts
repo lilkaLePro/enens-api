@@ -16,5 +16,8 @@ export class CreateCampagnInput {
   authorId: string
 
   @Field({ nullable: true })
-  thumbnailUrl: string
+  thumbnailUrl: string;
+
+  @Field({ nullable: true })
+  compagnyName: string
 }

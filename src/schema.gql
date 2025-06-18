@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Address {
+  city: String
+  country: String
+  street: String
+}
+
 type AuthPayload {
   accessToken: String!
   role: String!
@@ -14,6 +20,7 @@ enum CAMPAGN_TYPE {
 }
 
 type Campagn {
+  CompagnyName: String!
   EntrepriseId: ID!
   _id: ID!
   authorId: ID!
@@ -33,6 +40,7 @@ input CreateCampagnInput {
   authorId: String!
   campagnName: String!
   campagnType: [CAMPAGN_TYPE!]!
+  compagnyName: String
   description: String!
   thumbnailUrl: String
 }
