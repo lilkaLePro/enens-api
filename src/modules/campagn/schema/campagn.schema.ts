@@ -36,6 +36,10 @@ export class Campagn {
 
   @Field(() => ID)
   @Column({ nullable: true })
-  EntrepriseId: ObjectId
+  EntrepriseId: ObjectId;
+
+  @Field(() => String)
+  @Column({ nullable: true })
+  CompagnyName: string;
 
 }
