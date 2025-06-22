@@ -8,6 +8,9 @@ export class S3Service {
   private s3 = new S3Client({ region: process.env.AWS_S3_REGION });
 
   async uploadFile(file: Express.Multer.File, folder: "upload") {
+    if (!file) {
+      throw new Error('Aucun fichier reçu');
+    }
     const ext = path.extname(file.originalname);
     const key = `${folder}/${randomUUID()}${ext}`
 
@@ -16,7 +19,6 @@ export class S3Service {
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read'
     }));
     
     return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${key}`;
