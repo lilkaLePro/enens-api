@@ -29,7 +29,6 @@ export class ProjectResolver {
   async createNewCampagn(
     @Args('input') input: CreateCampagnInput,
   ): Promise<Campagn> {
-    // const uploadedUrl = await this.serviceS3.uploadFile(await file, "upload");
     return await this.projectService.createNewCampagn(input);
   }
 }
