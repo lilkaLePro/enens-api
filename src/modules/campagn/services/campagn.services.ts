@@ -24,17 +24,17 @@ export class ProjectServices {
     return projects;
   }
 
-  async createNewCampagn(input: CreateCampagnInput, uploadedUrl?: string): Promise<Campagn> {
-    const { campagnName, description, campagnType = [CAMPAGN_TYPE.PROMO_CAMPAGNE], authorId } = input;
-    
+  async createNewCampagn(
+    input: CreateCampagnInput,
+    uploadedUrl?: string,
+  ): Promise<Campagn> {
+
     const newCampagn = this.projectRepository.create({
-      campagnName: campagnName,
-      campagnType: campagnType,
-      description: description,
-      authorId: new ObjectId(authorId),
-      thumbnailUrl: uploadedUrl
+      authorId: new ObjectId(input.authorId),
+      thumbnailUrl: uploadedUrl,
+      ...input
     });
-    await this.projectRepository.save(newCampagn)
+    await this.projectRepository.save(newCampagn);
 
     return newCampagn;
   }
