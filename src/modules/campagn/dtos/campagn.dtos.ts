@@ -30,4 +30,10 @@ export class CreateCampagnInput {
 
   @Field({ nullable: true })
   contry?: string;
+
+  @Field()
+  categories: string[];
+
+  @Field()
+  subCategories: string[];
 }

@@ -36,10 +36,17 @@ export class Campagn {
 
   @Field(() => ID)
   @Column({ nullable: true })
-  EntrepriseId: ObjectId;
+  entrepriseId: ObjectId;
 
   @Field(() => String)
   @Column({ nullable: true })
-  CompagnyName: string;
+  compagnyName: string;
 
+  @Field(() => [String])
+  @Column()
+  categories: string[];
+  
+  @Field(() => [String])
+  @Column()
+  subCategories: string[];
 }
