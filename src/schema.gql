@@ -22,15 +22,15 @@ enum CAMPAGN_TYPE {
 type Campagn {
   _id: ID!
   authorId: ID!
-  campagnName: String!
-  campagnType: [CAMPAGN_TYPE!]!
+  campagnName: String
+  campagnType: [CAMPAGN_TYPE!]
   categories: [String!]!
   compagnyName: String!
-  description: String!
-  entrepriseId: ID!
-  objectifAmount: String!
+  description: String
+  entrepriseId: ID
+  objectifAmount: String
   subCategories: [String!]!
-  thumbnailUrl: String!
+  thumbnailUrl: String
 }
 
 input ConnectUserInput {
