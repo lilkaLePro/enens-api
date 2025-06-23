@@ -20,14 +20,16 @@ enum CAMPAGN_TYPE {
 }
 
 type Campagn {
-  CompagnyName: String!
-  EntrepriseId: ID!
   _id: ID!
   authorId: ID!
   campagnName: String!
   campagnType: [CAMPAGN_TYPE!]!
+  categories: [String!]!
+  compagnyName: String!
   description: String!
+  entrepriseId: ID!
   objectifAmount: String!
+  subCategories: [String!]!
   thumbnailUrl: String!
 }
 
@@ -40,11 +42,13 @@ input CreateCampagnInput {
   authorId: String!
   campagnName: String
   campagnType: [CAMPAGN_TYPE!]
+  categories: [String!]!
   compagnyName: String
   contry: String
   description: String
   endDate: String
   startDate: String
+  subCategories: [String!]!
   thumbnailUrl: String
 }
 

@@ -30,9 +30,11 @@ export class ProjectServices {
   ): Promise<Campagn> {
 
     const newCampagn = this.projectRepository.create({
+      ...input,
       authorId: new ObjectId(input.authorId),
       thumbnailUrl: uploadedUrl,
-      ...input
+      categories: [],
+      subCategories: []
     });
     await this.projectRepository.save(newCampagn);
 
