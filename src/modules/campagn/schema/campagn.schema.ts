@@ -10,15 +10,15 @@ export class Campagn {
   @ObjectIdColumn()
   _id: ObjectId;
 
-  @Field(() => [CAMPAGN_TYPE])
+  @Field(() => [CAMPAGN_TYPE], { nullable: true })
   @Column()
   campagnType: CAMPAGN_TYPE[];
 
-  @Field()
+  @Field(() => String, { nullable: true })
   @Column()
   campagnName: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   @Column()
   description: string;
 
@@ -26,16 +26,16 @@ export class Campagn {
   @Column()
   authorId: ObjectId;
 
-  @Field(() => String)
-  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @Column()
   thumbnailUrl?: string;
 
-  @Field(() => String)
-  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @Column()
   objectifAmount?: string;
 
-  @Field(() => ID)
-  @Column({ nullable: true })
+  @Field(() => ID,{ nullable: true })
+  @Column()
   entrepriseId: ObjectId;
 
   @Field(() => String)

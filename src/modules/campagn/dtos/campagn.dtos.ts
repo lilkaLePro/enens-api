@@ -31,9 +31,9 @@ export class CreateCampagnInput {
   @Field({ nullable: true })
   contry?: string;
 
-  @Field()
+  @Field(() => [String])
   categories: string[];
 
-  @Field()
+  @Field(() => [String])
   subCategories: string[];
 }
